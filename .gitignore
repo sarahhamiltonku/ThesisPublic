@@ -1,0 +1,10 @@
+.DS_Store
+
+
+# Ignore .keras files
+*.keras
+
+# Ignore .weights.h5 files
+*.weights.h5
+
+*.weights.h5
