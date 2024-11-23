@@ -24,7 +24,9 @@ from collections import Counter
 from tensorflow.keras.callbacks import Callback
 from sklearn.utils import class_weight
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import roc_curve, auc
 
+from tensorflow.keras.regularizers import l2
 
 
 
@@ -172,11 +174,11 @@ print(len(X), len(labels), len(image_codes))
 
 
 X_train_val_images, X_test_images, y_train_val, y_test, image_codes_train_val, image_codes_test = train_test_split(
-    X_images, labels, image_codes, test_size=0.15, random_state=42)
+    X_images, labels, image_codes, test_size=0.15, random_state=9)
 
 
 X_train_images, X_val_images, y_train, y_val = train_test_split(
-    X_train_val_images, y_train_val, test_size=0.1765, random_state=42)  
+    X_train_val_images, y_train_val, test_size=0.1765, random_state=9)  
 
 
 
@@ -290,8 +292,8 @@ lr_schedule = tf.keras.callbacks.ReduceLROnPlateau(monitor="val_loss", factor=0.
 model.compile(
     loss=loss,
     optimizer=keras.optimizers.Adam(learning_rate=1e-5),
-    #metrics=[f1_score, Recall(class_id=0)]
-    metrics=['accuracy']
+    metrics=[f1_score, Recall(class_id=0)]
+    #metrics=['accuracy']
 
 )
 
@@ -308,15 +310,15 @@ history =  model.fit(
 )
 
 
-test_loss, test_accuracy_score= model.evaluate(test_dataset)
-#, test_recall_class_0 
+test_loss, test_f1_score, test_recall_class_0 = model.evaluate(test_dataset)
+#, test_accuracy_score
 
 
 
 from sklearn.metrics import mean_absolute_error
 
 y_pred = model.predict(test_dataset)
-
+y_pred_percent = y_pred
 y_pred = (model.predict(test_dataset) > 0.5).astype(int).flatten()
 
 mae = mean_absolute_error(y_test, y_pred)
@@ -363,7 +365,8 @@ print(Counter(class_counts))
 results_df = pd.DataFrame({
      'Image_Code': image_codes_test,  
     'Actual': y_test,    
-    'Predicted': y_pred.flatten()  
+    'Predicted': y_pred.flatten(),
+    'Predicted_percent': y_pred_percent.flatten()
 })
 
 
@@ -381,10 +384,103 @@ results_df.to_csv("Results/MODEL2/trans_cnn_predictions.txt", sep='\t', index=Fa
 
 
 
+#######################################
+
+
+# Plots 
 
 
 plt.figure(figsize=(14, 6))
+
+# Plot F1 Score
+plt.subplot(1, 2, 1)
+plt.plot(history.history['f1_score'], label="Training F1 Score", color="#a4041c")  
+plt.plot(history.history['val_f1_score'], label="Validation F1 Score", color="#4974a5") 
+plt.xlabel("Epochs", color="black")
+plt.ylabel("F1 Score", color="black")
+plt.title("F1 Over Epochs", color="black")
+plt.legend()
+#plt.grid(True)
+
+# Plot Loss
+plt.subplot(1, 2, 2)
+plt.plot(history.history['loss'], label="Training Loss", color="#a4041c")  # Custom color
+plt.plot(history.history['val_loss'], label="Validation Loss", color="#4974a5")  # Custom color
+plt.xlabel("Epochs", color="black")
+plt.ylabel("Loss", color="black")
+plt.title("Loss Over Epochs", color="black")
+plt.legend()
+#plt.grid(True)
+
+# Save the combined plot
+plt.tight_layout()
+plt.savefig("Results/MODEL2/validation_plots_model2.png")
+plt.show()
+
+
+
+
+
+### AUC PLOT 
+
+
+fpr, tpr, _ = roc_curve(y_test, y_pred_percent)
+roc_auc = auc(fpr, tpr)
+
+# Plot ROC Curve
+plt.figure(figsize=(7, 7))
+plt.plot(fpr, tpr, color="#a4041c", lw=2, label=f"ROC Curve (AUC = {roc_auc:.2f})") 
+plt.plot([0, 1], [0, 1], color="#4974a5", lw=2, linestyle="--", label="Random") 
+
+# Set labels and title
+plt.xlabel("False Positive Rate", color="black")
+plt.ylabel("True Positive Rate", color="black")
+plt.title("ROC Curve", color="black")
+plt.legend()
+plt.grid(True)
+
+# Save the plot
+
+plt.savefig("Results/MODEL2/roc_curveMODEL2a.png")
+plt.show()
+
+
+
+
+
+fpr, tpr, _ = roc_curve(y_test, y_pred)
+roc_auc = auc(fpr, tpr)
+
+# Plot ROC Curve
+plt.figure(figsize=(7, 7))
+plt.plot(fpr, tpr, color="#a4041c", lw=2, label=f"ROC Curve (AUC = {roc_auc:.2f})") 
+plt.plot([0, 1], [0, 1], color="#4974a5", lw=2, linestyle="--", label="Random") 
+
+# Set labels and title
+plt.xlabel("False Positive Rate", color="black")
+plt.ylabel("True Positive Rate", color="black")
+plt.title("ROC Curve", color="black")
+plt.legend()
+plt.grid(True)
+
+# Save the plot
+
+plt.savefig("Results/MODEL2/roc_curveMODEL2b.png")
+plt.show()
+
+
+
+
+
+
+
+
+
+
 """
+
+plt.figure(figsize=(14, 6))
+
 # Plot F1 Score
 plt.subplot(1, 2, 1)
 plt.plot(history.history['f1_score'], label="Training F1 Score")
@@ -396,7 +492,7 @@ plt.legend()
 plt.savefig("Results/MODEL2/ValidationF1.png")
 plt.tight_layout()
 plt.close() 
-"""
+
 
 
 
@@ -433,7 +529,7 @@ plt.close()
 
 
 
-
+"""
 
 
 

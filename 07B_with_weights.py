@@ -442,8 +442,8 @@ results_df = pd.DataFrame({
 })
 
 
-model.save("Results/MODEL3/full_model.keras")
-model.save_weights("Results/MODEL3/model_weights.weights.h5")
+#model.save("Results/MODEL3/full_model.keras")
+#model.save_weights("Results/MODEL3/model_weights.weights.h5")
 
 
 #### Save predictions

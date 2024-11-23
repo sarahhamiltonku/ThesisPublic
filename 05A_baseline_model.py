@@ -154,7 +154,7 @@ results_df = pd.DataFrame({
 
 # Save to a CSV file
 
-results_df.to_csv("Data/Results/MODEL1/knn_predictions.txt", sep='\t', index=False)
+results_df.to_csv("Results/MODEL1/knn_predictions.txt", sep='\t', index=False)
 
 
 
@@ -178,15 +178,26 @@ for k in neighbors:
     cv_scores.append(1 - scores.mean())  # Misclassification error = 1 - accuracy
 
 # Plotting misclassification error vs. number of neighbors
-plt.figure(figsize=(10, 6))
-plt.plot(neighbors, cv_scores, marker='o')
-plt.xlabel('Number of K Neighbors')
-plt.ylabel('Misclassification Error')
-plt.title('Misclassification Error vs. K Value for KNN')
-plt.savefig("Data/Results/MODEL1/K_tracking.png")
 
-plt.tight_layout()
-plt.close() 
+
+plt.savefig("Results/MODEL1/K_tracking.png")
+
+
+
+
+
+plt.figure(figsize=(7, 7))
+plt.plot(neighbors, cv_scores, color="#a4041c", lw=2, marker="o", label="Misclassification Error")
+plt.xlabel("Number of K Neighbors", color="black")
+plt.ylabel("Misclassification Error", color="black")
+plt.title("Misclassification Error vs. K Value for KNN", color="black")
+
+plt.legend()
+plt.savefig("Results/MODEL1/K_tracking_MODEL1.png")
+plt.show()
+
+
+
 
 
 
@@ -200,16 +211,16 @@ from sklearn.metrics import roc_curve, auc
 fpr, tpr, _ = roc_curve(y_test, y_pred)
 roc_auc = auc(fpr, tpr)
 
-# Plot ROC curve
-plt.figure(figsize=(8, 6))
-plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
-plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Receiver Operating Characteristic (ROC) Curve')
-plt.legend(loc="lower right")
-plt.savefig("Data/Results/MODEL1/ROC.png")
+plt.figure(figsize=(7, 7))
+plt.plot(fpr, tpr, color="#a4041c", lw=2, label=f"ROC Curve (AUC = {roc_auc:.2f})")
+plt.plot([0, 1], [0, 1], color="#4974a5", lw=2, linestyle="--", label="Random")
+plt.xlabel("False Positive Rate", color="black")
+plt.ylabel("True Positive Rate", color="black")
+plt.title("ROC Curve", color="black")
+plt.legend()
+plt.grid(True)
 
-plt.tight_layout()
-plt.close() 
+# Save the plot
+plt.savefig("Results/MODEL1/ROC_MODEL1.png")
+plt.show()
 
