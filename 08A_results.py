@@ -48,21 +48,21 @@ model3_df =save_predictions(
     'Data/clustered_full.txt',
     'Results/MODEL3/Final_model3_predictions.txt'
 )
-"""
-save_predictions(
+
+model2_df = save_predictions(
     'Results/MODEL2/trans_cnn_predictions.txt',
     'Data/clustered_geopoints.txt',
     'Data/clustered_full.txt',
     'Results/MODEL2/Final_model2_predictions.txt'
 )
 
-save_predictions(
+model1_df = save_predictions(
     'Results/MODEL1/knn_predictions.txt',
     'Data/clustered_geopoints.txt',
     'Data/clustered_full.txt',
     'Results/MODEL1/Final_model1_predictions.txt'
 )
-"""
+
 
 
 
@@ -100,14 +100,40 @@ matching_images, df_latlongs = find_matching_images(
     num_samples=9
 )
 
-
-
 print(df_latlongs.columns)
 df_latlongs.to_csv('Results/MODEL3/latlongresults.txt', sep='\t', index=False)
 df_latlongs = df_latlongs[['Image_Code', 'Actual', 'Predicted', 'latitude', 'longitude']]
 
 print(df_latlongs)
 print(df_latlongs[['latitude', 'longitude']])
+
+
+
+matching_images2, df_latlongs2 = find_matching_images(
+    df=model2_df,  
+    predictions_column='Predicted',  
+    filenames_column='Image_Code', 
+    num_samples=9
+)
+
+df_latlongs2.to_csv('Results/MODEL2/latlongresults.txt', sep='\t', index=False)
+
+
+matching_images3, df_latlongs3 = find_matching_images(
+    df=model1_df,  
+    predictions_column='Predicted',  
+    filenames_column='Image_Code', 
+    num_samples=9
+)
+
+df_latlongs3.to_csv('Results/MODEL2/latlongresults.txt', sep='\t', index=False)
+
+
+
+
+
+
+
 
 
 
@@ -148,7 +174,31 @@ def save_grid(images, output_path, grid_size=(3, 3), image_size=(224, 224)):
     print(f"Saved grid to {output_path}")
 
 
-results_folder = './Results'
+results_folder = './Results/MODEL3/IMAGES'
+save_images(
+    matching_images=matching_images, 
+    df=model3_df,                     
+    filenames_column='Image_Code',    
+    results_folder=results_folder    
+)
+print(type(matching_images))
+
+
+
+
+
+results_folder = './Results/MODEL2/IMAGES'
+save_images(
+    matching_images=matching_images, 
+    df=model2_df,                     
+    filenames_column='Image_Code',    
+    results_folder=results_folder    
+)
+
+
+
+
+results_folder = './Results/MODEL1/IMAGES'
 save_images(
     matching_images=matching_images, 
     df=model3_df,                     
@@ -157,5 +207,4 @@ save_images(
 )
 
 
-print(type(matching_images))
 
