@@ -1,8 +1,6 @@
 """
 Preprocessing survey data and get averages of clusters 
 
-TODO: Look at Yeh. Chris 
-TODO: More work here ot clean find best variables etc. 
 
 """
 

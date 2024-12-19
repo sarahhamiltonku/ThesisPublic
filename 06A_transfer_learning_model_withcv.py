@@ -193,11 +193,6 @@ def preprocess_data(images, labels):
 
 
 
-
-
-
-
-
 test_dataset = tf.data.Dataset.from_tensor_slices((X_test_images, y_test))
 test_dataset = test_dataset.map(
     lambda x, y: preprocess_data(x, y),

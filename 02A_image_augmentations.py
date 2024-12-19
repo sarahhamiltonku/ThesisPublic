@@ -3,10 +3,7 @@
 
 # These augmentations are for all models (so different from 07 random augmentations)
 
-TODO: get images for thesis from here as well
 Guide to Augmentations:
-ADD 
-
 
 # Uses geo_env environment 
 """

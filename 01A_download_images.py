@@ -3,8 +3,6 @@ Download images from Google Earth Engine to Google Drive
 This script comes from KC
 
 
-TODO: check client auth and latest version from loaned CEBI laptop
-
 
 Download guide for Earth Engine images
 A Basic init
